@@ -9,7 +9,13 @@
 
 	<property name="spiffs.file" value="spiffs.bin"/>
 	<property name="spiffs.dir" value="web"/>
-
+	
+	<!--
+		Download this jar from https://github.com/littleyoda/EspStackTraceDecoder
+		if you want the stack trace tool to work. Update this property to point to it!
+	-->
+	<property name="stack.jar" value="C:\Users\Paul\Downloads\EspStackTraceDecoder.jar"/>
+	
 	<echo> ${eclipse_home} </echo>
 	<groovy>
 		String getProperty(Properties props, String key, int level) {
@@ -83,6 +89,14 @@
 		println(		properties['A.BUILD.SPIFFS_SIZE'])
 	</groovy>
 
+	<target name="stack">
+		<java jar="${stack.jar}" fork="true">
+			<arg value="${A.COMPILER.PATH}/xtensa-lx106-elf-addr2line"/>
+			<arg value="${project_loc}/Release/${project_name}.elf"/>
+			<arg value="${project_loc}/dump.txt"/>
+		</java>
+	</target>
+	
 	<target name="erase flash">
 		<exec executable="${A.TOOLS.ESPTOOL.PATH}/${A.TOOLS.ESPTOOL.CMD}">
 			<arg value="-cd"/>
