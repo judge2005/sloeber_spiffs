@@ -78,6 +78,9 @@
 		props.each{ k, v -> 
 			properties[k] = getProperty(props, k, 0)
 		}
+		
+		properties['A.BUILD.SPIFFS_SIZE'] = Integer.parseInt(properties['A.BUILD.SPIFFS_END'].substring(2),16) - Integer.parseInt(properties['A.BUILD.SPIFFS_START'].substring(2), 16)
+		println(		properties['A.BUILD.SPIFFS_SIZE'])
 	</groovy>
 
 	<target name="erase flash">
@@ -125,12 +128,16 @@
 		
 	<target name="mkspiffs">
 		<exec executable="${A.TOOLS.MKSPIFFS.PATH}/${A.TOOLS.MKSPIFFS.CMD}">
+			<arg value="-d"/>
+			<arg value="5"/>
 			<arg value="-c"/>
 			<arg value="${project_loc}/${spiffs.dir}"/>
 			<arg value="-p"/>
 			<arg value="${A.BUILD.SPIFFS_PAGESIZE}"/>
 			<arg value="-b"/>
 			<arg value="${A.BUILD.SPIFFS_BLOCKSIZE}"/>
+			<arg value="-s"/>
+			<arg value="${A.BUILD.SPIFFS_SIZE}"/>
 			<arg value="${spiffs.file}"/>
 		</exec>
 	</target>
